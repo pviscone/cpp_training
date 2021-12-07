@@ -91,6 +91,33 @@ long (1'000'000'000)
 
 **bool** può essere true o false. False è 0, qualsiasi altro valore è True. Un bool ha size 8 bit 
 
+### Casting
+
+E' possibile fare il casting di un tipo ovvero trasformare una variabile da un tipo a un altro
+
+```cpp
+//NON USARE MAI IL CASTING C-LIKE
+float a {10.8};
+int i;
+i = int (a); //Verrà assegnato 10, prende solo parte intera
+ 
+i= (int) a; // C-like notation
+```
+
+I cast in stile C non vengono controllati dal compilatore e possono fallire in fase di esecuzione
+
+In c++ esistono diversi tipi di casting con funzioni lievemente differenti:
+
+static_cast, dynamic_cast, const_cast, reinterpret_cast
+
+```cpp
+//C++ version. Il compilatore verifica la correttezza
+i = static_cast<int> (a);
+//
+```
+
+
+
 ### sizeof
 
 la funzione sizeof restituisce la dimensione in bytes di un tipo o di una variabile
