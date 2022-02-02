@@ -1,5 +1,9 @@
+Shared libraries
+Fai prove compilazione con header file
 Puntatori a puntatori
+unordered map
 Funzioni variadiche
+Costruttori variadici
 Multiprocessing
 Multithreading
 
