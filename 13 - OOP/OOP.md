@@ -1,3 +1,5 @@
+[TOC]
+
 # OOP
 
 ```cpp
@@ -120,6 +122,8 @@ int main(){
 
 **Per compilare basta mettere in lista tutti i file cpp presenti (in questo caso main.cpp e ClassName.cpp)** in questo modo si crea un unico file binario (non viene creata una shared library) 
 
+------
+
 ## Costruttori e distruttori 
 
 i **costruttori** sono un metodo speciale della classe invocato durante la creazione di un oggetto. 
@@ -231,5 +235,165 @@ Player::Player():
 Player::Player(std::string name_val):
 	Player{name_val,0,0}{
 }
+```
+
+### Copy constructors
+
+Quando un oggeto viene copiato il compilatore deve creare un nuovo oggetto a partire ada uno già esistente.
+
+Una copia viene effettuata quando si passa un valore a una funzione, quando una funzione ritorna un valore o quando viene costruito un oggetto basato su un altro oggetto della stessa classe.
+
+Se non si fornisce un copy constructor allora il compilatore ne ha uno di **default**: Copia tutti i valori di un'oggetto nel nuovo.
+
+```cpp
+//Default copy constructor
+Player player1{"doom_slayer",100,100};
+Player same_player{player1}; 
+//player1 e same_player hanno gli stessi attributi con gli stessi valori
+```
+
+**Shallow copy vs deep copy**: Se stai usando puntatori viene copiato solo il puntatore non ciò a cui punta (shallow copy) quindi quando si usano i puntatori conviene sempre definire dei copy constructor custom (e in generale evitare di usare puntatori e usare le classi STL già definite).
+
+Ma si può definire anche un **custom** copy constructor. E' buona pratica passare come argomento una const reference (per sicurezza, per non cambiare l'oggetto originale)
+
+```cpp
+//Solo copy constructor
+Player::Player (const Player &source)
+    //inizialization list to copy the object
+	:name{source.name},
+	health{source.health},
+	xp{source.xp}{
+        //altre istruzioni
+        cout<< source.name << " copied" << endl;
+    }
+//Nota che il costruttore di copia è solo un costruttore che ha come argomento un parametro della classe stessa
+
+```
+
+#### 	Shallow copy
+
+Il copy constructor di default fa una shallow copy (copia i puntatori ma non ciò a cui puntano  )
+
+```cpp
+//Shallow Constructor di ClassName con attributo i
+ClassName::ClassName(int i_val){
+    i=new int;
+    *i=i_val;
+}
+//Shallow copy constructor. Copia il puntatore (poichè i è un puntatore)
+ClassName::ClassName(const ClassName &source)
+    : i{source.i}{
+        cout << "Shallow copy" << endl;
+    }
+//Shallow destructor
+ClassName::~ClassName(){
+    delete i;
+    cout << "deleted" << endl;
+}
+```
+
+PROBLEMA: 
+
+- Se si cambia il valore del dato puntato dal puntatore dell'oggetto copiato si cambia anche quello del oggetto originale
+- viene copiato solo il puntatore di i, non ciò a cui punta poichè source e il nuovo oggetto puntano alla stessa area di memoria nell'heap. Questo significa che se deallochiamo (o  va fuori scope) il primo oggetto il secondo punterà a un area di memoria invalida nell' heap (Dangling pointer)
+
+```cpp
+//ESEMPIO
+class ClassName(){
+    int *i_ptr;
+    public:
+    	int get_i(){
+           return *i_ptr; 
+         } 
+    	ClassName(int i){
+            i_ptr= new int;
+        	*i_ptr=i;
+        }
+    	ClassName(const ClassName &cls)
+            :i_ptr{cls.i_ptr}{
+            cout<<"pointer copied"
+        }
+    	~ClassName(){
+			delete i_ptr;
+            cout << "destroyed" <<endl;
+        }
+};
+
+void display(ClassName cls){
+    cout << cls.get_i() <<endl;
+}
+
+int main(){
+    ClassName obj1{1}; //puntatore i_ptr creato
+    display(obj1); //Viene creata una copia dell'oggetto e anche del puntatore i_ptr di obj1 nello stack (scope della funzione display).
+    //Quando esce dalla funzione la variabile locale di display (cls) viene distrutta quindi viene sia distrutto il puntatore nello stack che i dati a cui punta nello stack e viene stampato "destroyed"
+    
+    //Problema, il dato distrutto è lo stesso di quello a cui punta i_ptr di obj1, che ora punta a un'area di memoria invalida
+    
+    ClassName obj2{obj1}; //Copia i_ptr di obj1 in obj2 ma i_ptr punta a un'area di memoria invalida
+    
+    return 0; //Gli oggetti vanno fuori scope e vengono distrutti. Ma l'aree di memorie puntate dagli i_ptr sono invalide e il programma crasha
+}
+```
+
+#### 		Deep Copy
+
+Tramite deep copy copiamo nell'heap sia il puntatore che il dato puntato. Usalo sempre quando negli attributi della classe c'è un puntatore
+
+```cpp
+//Solo copy constructor, il resto uguale a esempio di sopra
+
+ClassName::ClassName(const ClassName &source){
+    i_ptr= new int;
+	*i_ptr=*source.i_ptr //Il * ci va perchè al defereziato di i_ptr ci va il deferenziato dell'i_ptr da copiare
+}
+
+//Oppure delegando al costruttore principale
+ClassName::ClassName(const ClassName &source):
+	ClassName{*source.i_ptr}{}
+
+//In questo modo, nell'esempio di sopra, non ci sono problemi perchè quando la funzione display copia l'oggetto non copia il puntatore nello stack ma alloca dinamicamente nell'heap un nuovo puntatore con un nuovo dato
+```
+
+
+
+## Move constructors
+
+Ricordiamo che L values è tutto ciò che può avereun indirizzo in memoria e gli R value sono oggetti temporanei creati dal compilatore
+
+```cpp
+int total{0};
+total=100+200;
+//Quello che succede è che 300 viene prima memorizzato in una variabile temporanea senza nome, poi in total e alla fine la variabile temporanea viene eleminata
+//Lo stesso avviene con gli oggetti
+```
+
+Con gli oggetti, soprattutto nel caso di deep copy questo crea un overhead significativo in quanto vengono effettuate numerose copie in variabili temporanee.
+
+Se per esempio facciamo il pushback di un vettore di oggetti e il copy constructor fa deep copy avremmo un codice molto inefficiente a causa di creazione e distruzione di numerosi oggetti temporanei
+
+Nel C++11 è stato introdotto il move constructor che invece di copiare un oggetto lo sposta. E' raccomandato usarlo quando si lavora con i puntatori
+
+> NB: a volte in fase di debug può sembrare che non vengano effettuati spostamenti o copie (copy illusions). Questo perchè il compilatore effettua un'ottimizzazione che evita di fare copie inutili
+
+**R value references**: Necessarie nella move semantics. Operatore **&&**. Si possono pensare come referenze agli oggetti temporanei di cui abbiamo parlato
+
+```cpp
+//R value references
+int &&r_ref =200;
+r_ref=300; //Valore della R references cambiato
+```
+
+Il move constructor semplicemente copia l'indirizzo dalla sorgente all'oggetto corrente e assegna al puntatore originale nullptr.
+
+```cpp
+//Move constructor
+ClassName::ClassName(ClassName &&source)
+    : i_ptr{source.i_ptr}{
+        source.i_ptr=nullptr;
+    }
+}
+//source.i_ptr è un puntatore quindi un R value
+//L'i_ptr di source diventa un null_ptr. Se non effettuiamo questo passaggio diventa semplicemente una shallow copy
 ```
 
