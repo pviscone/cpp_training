@@ -1,9 +1,11 @@
 Shared libraries
-Fai prove compilazione con header file
 Puntatori a puntatori
 unordered map
+Test
+continous inteGRATION
+makefile
+documentazione
 Funzioni variadiche
 Costruttori variadici
 Multiprocessing
 Multithreading
-

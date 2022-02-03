@@ -84,9 +84,9 @@ Si usano delle direttive **Include guards** per evitare di includere il file pi�
 ```cpp
 // File ClassName.h
 
-#ifndef _ACCOUNT_H_
-//se _ACCOUNT_H_ È definito skippa tutto fino a #endif
-#define _ACCOUNT_H_ //Altrimenti lo definisce
+#ifndef _CLASSNAME_H_
+//se _CLASSNAME_H_ È definito skippa tutto fino a #endif
+#define _CLASSNAME_H_ //Altrimenti lo definisce
 calss ClassName{
     private:
     	int i;
@@ -118,7 +118,7 @@ int main(){
 }
 ```
 
-
+**Per compilare basta mettere in lista tutti i file cpp presenti (in questo caso main.cpp e ClassName.cpp)** in questo modo si crea un unico file binario (non viene creata una shared library) 
 
 ## Costruttori e distruttori 
 
@@ -129,14 +129,15 @@ Hanno lo stesso nome della classe, il tipo del return non è specificato e si pu
 I **distruttori** sono metodi speciali invocati quando un oggetto viene distrutto (o va fuori scope). Solo un distruttore per classe è permesso e non è possibile sfruttare l'overloading. Si indicano con la ~
 
 ```cpp
-//PROVA QUESTO CODICE
+#include <iostream>
+#include <string>
 class Player{
     private:
-    	std::string name;
-    	int health;
-    	int xp;
+        std::string name;
+        int health;
+        int xp;
     public:
-    	void set_name(std::string str){
+        void set_name(std::string str){
             name=str;
         }
         void set_health(int i){
@@ -145,33 +146,90 @@ class Player{
         void set_xp(int i){
                 xp=i;
             }
+        void print(){
+            std::cout << name << ":" << health << "PV,"<< xp<< "xp" << std::endl;
+        }
     	//Costruttori
-    	Player();
-    	Player(std::string str){
+        Player();
+        Player(std::string str){
             set_name(str);
         };
-    	Player(std::string str, int health_val, int xp_val){
+        Player(std::string str, int health_val, int xp_val){
             set_name(str);
             set_health(health_val);
             set_xp(xp_val);
         };
     	//In questo modo abbiamo 3 diversi modi per 			costruire un'istanza
-    
+
     	//Distruttore
-    	~Player(){
-            cout<<"Object destroyed"<<endl;
+        ~Player(){
+            std::cout<<"Object destroyed"<<std::endl;
         };
+};
+
+int main(){
+
+    Player *doom_slayer {};
+    doom_slayer = new Player("Doom Slayer", 100, 100);
+    doom_slayer->print();
+    delete doom_slayer; //Stampa "object destroyed"
+    return 0;
 }
-Player doom_slayer{"doom slayer",100,100};
-//In questo modo in base a come si costruisce l'oggetto verranno fatte le relative assegnazioni
-
-delete doom_slayer; //Stampa "object destroyed"
-
 ```
 
+**NB:**
+
+- delete (il distruttore) può essere chiamato solo su oggetti allocati dinamicamente ovvero allocati nell' Heap. 
+  Il resto viene considerato variabile locale e fa parte dello stack
+
+- Nelle funzione, ad esempio, set_name possiamo scrivere in due modi
+
+  ```cpp
+  void set_name(std::string str){
+      name=str;
+  }
+  void set_name(std::string name){
+      this->name = name;
+  }
+  //Questo poichè se chiamiamo le var della funzione come gli attributi le sovrascrivono nello scope della funzione. Bisogna usare this come in python si usa self
+  ```
+
+- I parametri nel costruttore possono essere posti a valori di default come si fa con le funzioni
+
+### Constructor initialization list
+
+Prima abbiamo dato un valore agli attributi tramite assegnazione con =. Questo può essere inefficiente poichè prima di fare l'asseggnamento tutti gli attributi vengono creati a valori nulli.
+
+Per risolvere questo problema possiamo inizializzare direttamente le variabili al valore che vogliamo
+
+```cpp
+//Scrivo solo il costruttore
+ClassName::ClassName(int i_val, int j_val):
+	: i{i_val}, j{j_val}{
+        \\Istruzioni varie
+}
+```
+
+Ricorda che gli attributi non vengono inizializzati in ordine di inizializzazione ma in ordine di dichiarazione (l'ordine con il quale sono stati definiti nella definizione della classe)
 
 
 
+### Delegating constructors
 
+Quando facciamo overloading di costruttori spesso creiamo molto codice ridondante (soprattutto per inizializzare gli attributi).
 
+Questo può essere evitato specificando le inizializzazione degli attributi solo nel caso più esteso e in tutti gli altri chiamare l'attributo più esteso
+
+```cpp
+//solo costruttori
+Player::Player(std::string name_val,int health_val, in xp_val):
+	name{name_val},health{health_val},xp{xp_val}{
+}
+Player::Player():
+	Player{"None",0,0}{
+}
+Player::Player(std::string name_val):
+	Player{name_val,0,0}{
+}
+```
 
