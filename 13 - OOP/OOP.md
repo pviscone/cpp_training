@@ -74,7 +74,7 @@ void ClassName::modify_i(int j){
     
     this -> i = j; 
     (*this).i=j; // Equivalente a quanto sopra
-    //this funziona come self ma è un puntatore, va dereferenziato
+    //this funziona come self ma è un puntatore che contiene l'indirizzo di memoria dell'oggetto, va dereferenziato
 
 } 
 ```
@@ -357,7 +357,7 @@ ClassName::ClassName(const ClassName &source):
 
 
 
-## Move constructors
+### Move constructors
 
 Ricordiamo che L values è tutto ciò che può avereun indirizzo in memoria e gli R value sono oggetti temporanei creati dal compilatore
 
@@ -397,3 +397,111 @@ ClassName::ClassName(ClassName &&source)
 //L'i_ptr di source diventa un null_ptr. Se non effettuiamo questo passaggio diventa semplicemente una shallow copy
 ```
 
+In questo modo anche se dovessimo fare il pushback di ClassName in un vettore non ci sarebbero copie
+
+## Const con le classi
+
+Si possono creare anche oggetti const o passare ai metodi argomenti const.
+
+```cpp
+const ClassName istance {0}; 
+```
+
+Per un oggetto const è impossibile cambiare i suoi attributi una volta inizializzato ma non è neanche possibile passare l'oggetto a funzioni o metodi della classe in quanto, per il compilatore, la funzione potrebbe comunque potenzialmente cambiare l'oggeto.
+
+La soluzione è specificare nella definizione del metodo che la funzione non modificherà l'oggetto
+
+```cpp
+//definizione del metodo nella definizione della classe
+public:
+int get_i() const{
+	return i   
+}
+//in questo modo il compilatore sa che la funzione non può modificare l'oggetto e se nella funzione si fa qualche modifica il compilatore torna errore
+
+
+int main(){
+    const ClassName istance {0};
+    cout << get_i(istance) << endl;
+    return 0;
+}
+```
+
+ 
+
+## Membri statici
+
+E' possibile dichiarare anche attributi statici ovvero attributi che appartengono alla classe intera e non al singolo oggetto.
+
+Si possono definire anche metodi statici che sono indipendenti dall'oggetto e possono essere chiamati usando il nome della classe
+
+```cpp
+//Ad esempio una variabile statica possibile può essere un contatore che conta il numero di istanze. Basta incrementarlo nel costruttore e decrementarlo nel distruttore
+class Player{
+    private:
+    	static int num_players{0};
+    	std::string name;
+    public:
+    	static int get_num_players(){
+            return num_players;
+        }
+    	Player(std::string name_val):
+    		name{name_val}{
+            ++num_players;
+        }
+    	~Player(){
+            --num_players
+        }
+}
+
+```
+
+## Struct vs class
+
+Una struct è una classe in cui tutti i membri sono public di default mentre i membri di una classe sono private di default
+
+Guida:
+
+- Usa struct per oggetti passivi con accesso public
+- Non dichiarare metodi in struct
+- Usa le classi per oggetti attivi con accesso private
+- Nelle classi Implementa getter, setter quando necessario
+
+
+
+## Amici della classe
+
+Un amico di una classe è una funzione (esterna alla classe) o un'altra classe che ha accesso ai membri privati della classe (e può anche modificarli)
+
+- L'amicizia deve essere dichiarata esplicitamente nella classe e dichiarata nel prototipo della funzione tramite la keyword *friend*
+- L'amicizia non è simmetrica: se A è amico di B, B non è amico di A
+- La transitivita va dichiarata esplicitamente altrimenti se A amico di B e B di C non è garantito che A sia amico di C
+
+```cpp
+class Player{
+    friend void display_player{Player &p};
+    std::string name;
+};
+void display_player(Player &p){
+    cout << p.name << endl;
+}
+
+//OPPURE NEL CASO DI METODO DI UN'ALTRA CLASSE
+class Player{
+    friend void OtherClass::display_player{Player &p};
+    std::string name;
+};
+class OtherClass{
+    public:
+    	friend void Player::display_player(Player &p){
+            cout << p.name << endl;
+        }
+};
+
+//OPPURE POSSIAMO DEFINIRE UN INTERA CLASSE AMICA IN MODO TALE CHE TUTTI I SUOI METODI AVRANNO ACCESSO AGLI ATTRIBUTI PRIVATI DELLA CLASSE
+class Player{
+    friend class OtherClass;
+}
+```
+
+FAI CHALLENGE!!!!
