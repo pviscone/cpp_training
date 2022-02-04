@@ -504,4 +504,3 @@ class Player{
 }
 ```
 
-FAI CHALLENGE!!!!

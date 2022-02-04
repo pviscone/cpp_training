@@ -1,6 +1,9 @@
+Argomenti cmepda
 Shared libraries
 Puntatori a puntatori
 unordered map
+enum
+typedef
 Test
 continous inteGRATION
 makefile
