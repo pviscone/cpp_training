@@ -140,9 +140,11 @@ int *initialize_array(double init_value,size_t size){
 
 ## References
 
-Una reference è un alias di una variabile. Deve essere inizializzata è non può essere null.
+Una reference è un alias di una variabile. Deve essere inizializzata è non può essere null. 
 
-Una volta inizializzata non può cambiare la variabile a cui è riferita. Possono essere pensati come constant pointers che vengono automaticamente dereferenziati
+Una volta inizializzata non può cambiare la variabile a cui è riferita. Possono essere pensati come constant pointers che vengono automaticamente dereferenziati.
+
+Nella definizione dei parametri di una funzione una reference è un alias per la variabile passata che però ne permette la modifica
 
 ```cpp
 vector<int> arr{1,2,3};
