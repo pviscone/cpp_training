@@ -1,4 +1,5 @@
 Argomenti cmepda
+debugger
 Shared libraries
 Puntatori a puntatori
 unordered map

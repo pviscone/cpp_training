@@ -154,6 +154,18 @@ Per dichiarare una costante basta aggiungere **const** prima di dichiarare la co
 const int month {12};
 ```
 
+### Constexpr
+
+Sono costanti calcolate in fase di compilazione;
+
+```cpp
+const int a{1};
+const int b{2};
+constexpr int a+b;
+```
+
+
+
 ### Defined constants
 
 METODO C-LIKE DEPRECATO, NON USARLO
