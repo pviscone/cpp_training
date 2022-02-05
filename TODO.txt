@@ -1,5 +1,6 @@
 Argomenti cmepda
 debugger
+iteratori in generale
 Shared libraries
 Puntatori a puntatori
 unordered map

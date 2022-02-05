@@ -21,10 +21,10 @@ E' bene assumere alcune regole di buona creanza:
 In genere, dato $ l'operatore su cui fare l'overloading basta creare la funzione del tipo opportuno chiamata 
 
 ```cpp
-Type &operator$(const Type &rhs);
+Type& operator$(const Type &rhs);
 ```
 
-
+NB: Type& è ciò che è a sinistra dell'operatore. Non sempre serve il &, serve solo quando il lhs va modificato. Ad esempio per gli operatori +,* ,etc. non serve
 
 ## Assegnamento
 
