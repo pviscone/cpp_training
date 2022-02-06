@@ -1,5 +1,7 @@
 Argomenti cmepda
+casting
 debugger
+approfondisci template
 iteratori in generale
 private and protected inheritance
 Shared libraries
@@ -15,3 +17,4 @@ Funzioni variadiche
 Costruttori variadici
 Multiprocessing
 Multithreading
+C++20 features
