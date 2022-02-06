@@ -1,39 +1,48 @@
 #include <iostream>
+#include<string>
 using namespace std;
 
-class ClassName{
-    private:
-        int *i_ptr;
+class person{
+    protected:
+        string name;
+        int age;
     public:
-        int get_i(){
-           return *i_ptr;
+        string get_name(){
+            return name;
         }
-        ClassName(int i){
-            i_ptr= new int;
-            *i_ptr=i;
+        int get_age(){
+            return age;
         }
-        ClassName(const ClassName &cls)
-            :ClassName{*cls.i_ptr}{
-            cout<<"pointer copied"<<endl;
+        void set_name(string name_val){
+            name=name_val;
         }
-        ~ClassName(){
-            delete i_ptr;
-            cout << "destroyed" <<endl;
+        void set_age(int age_val){
+            age=age_val;
+        }
+        person(string name_val, int age_val){
+            name=name_val;
+            age=age_val;
         }
 };
+class student : public person{
+    private:
+        string curriculum;
+        int average_grades;
+    public:
+        string get_curriculum(){
+            return curriculum;
+        }
+        int get_grades(){
+            return average_grades;
+        }
 
-void display(ClassName cls){
-    cout << cls.get_i() <<endl;
-}
+        student(string name_val, int age_val, string curriculum_val, int average_grades_val):
+            person{name_val,age_val},curriculum{curriculum_val},average_grades{average_grades_val}{}
+};
 
 int main(){
-    ClassName obj1{1}; //puntatore i_ptr creato
-    display(obj1); //Viene creata una copia dell'oggetto e anche del puntatore i_ptr di obj1 nello stack (scope della funzione display).
-    //Quando esce dalla funzione la variabile locale di display (cls) viene distrutta quindi viene sia distrutto il puntatore nello stack che i dati a cui punta nello stack e viene stampato "destroyed"
-    
-    //Problema, il dato distrutto è lo stesso di quello a cui punta i_ptr di obj1, che ora punta a un'area di memoria invalida
-    
-    ClassName obj2{obj1}; //Copia i_ptr di obj1 in obj2 ma i_ptr punta a un'area di memoria invalida
-    
-    return 0; //Gli oggetti vanno fuori scope e vengono distrutti. Ma l'aree di memorie puntate dagli i_ptr sono invalide e il programma crasha
+    student piero{"piero",24,"Physics",28};
+    cout << piero.get_name() << endl;
+    cout << piero.get_grades() << endl;
+    return 0;
 }

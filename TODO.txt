@@ -1,6 +1,7 @@
 Argomenti cmepda
 debugger
 iteratori in generale
+private and protected inheritance
 Shared libraries
 Puntatori a puntatori
 unordered map
