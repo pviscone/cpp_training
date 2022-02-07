@@ -1,2 +1,2 @@
 # cpp_training
-Just me learning c++
+Notes and exercises on C++
