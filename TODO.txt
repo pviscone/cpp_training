@@ -1,4 +1,5 @@
 Argomenti cmepda
+Come è organizzata una classe nella memoria?
 casting
 debugger
 approfondisci template
