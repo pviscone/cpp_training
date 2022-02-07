@@ -9,7 +9,8 @@ class Checking_Account : public Account{
         static constexpr const char *def_name = "Unnamed Savings Account";
         static constexpr double def_balance = 0.0;
     public:
-        bool withdraw(double amount);
+        virtual bool withdraw(double amount) override;
+        virtual bool deposit (double amount) override;
         Checking_Account(std::string name=def_name, double balance=def_balance);
         virtual ~Checking_Account()=default;
 };
