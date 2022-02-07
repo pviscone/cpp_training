@@ -82,8 +82,9 @@ Quando si dealloca un oggetto polimorfico possono esserci problemi. Se non defin
 ```cpp
 class Parent{
     public:
-    	virtual ~Parent();
+    	virtual ~Parent()=default;
 }
+//Default a regola dovrebbe evitare di farti implementare il distruttore in cpp e tenere quello di default nell'header. Se lo reimplementi in cpp lo sovrascrivi
 ```
 
 ## Override Specifier
