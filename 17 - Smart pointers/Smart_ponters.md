@@ -76,7 +76,7 @@ Esiste un modo più efficiente per inizializzare gli unique pointer (introdotta 
 
 ```cpp
 //inizializzare l'oggetto nelle parentesi tonde
-std::unique_ptr<ClassName> ptr = make_unique<ClassName> (...);
+std::unique_ptr<ClassName> ptr = std::make_unique<ClassName> (...);
 
 //oppure
 auto ptr = make_unique<ClassName>(...);

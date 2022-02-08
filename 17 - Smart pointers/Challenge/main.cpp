@@ -42,7 +42,6 @@ private:
     int data;
 public:
     Test(){
-        std::cout << "Enter data point : ";
         std::cin >> data;
         std::cout << "\tTest constructor (" << data << ")" << std::endl;
         }
@@ -52,9 +51,22 @@ public:
 };
 
 
-std::unique_ptr<std::vector<std::shared_ptr<Test>>> make();
-void fill(std::vector<std::shared_ptr<Test>> &vec, int num);
-void display(const std::vector<std::shared_ptr<Test>>&vec);
+std::unique_ptr<std::vector<std::shared_ptr<Test>>> make(){
+    //std::shared_ptr<Test> sh_ptr =std::make_shared<Test>();
+    //std::unique_ptr<std::vector<std::shared_ptr<Test>>> ptr =
+    return  std::make_unique<std::vector<std::shared_ptr<Test>>>();
+};
+void fill(std::vector<std::shared_ptr<Test>> &vec, int num){
+    for(int i {0}; i<num; i++){
+        std::cout << "Enter data point [" << i+1 << "] : ";
+        vec.push_back(std::make_shared<Test>());
+    }
+}
+void display(const std::vector<std::shared_ptr<Test>>&vec){
+    for(auto &ptr : vec){
+        std::cout << ptr->get_data() << std::endl;
+    }
+}
 
 int main() {
     std::unique_ptr<std::vector<std::shared_ptr<Test>>> vec_ptr;
