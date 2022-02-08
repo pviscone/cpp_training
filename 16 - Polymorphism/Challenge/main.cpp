@@ -67,7 +67,26 @@ int main(){
     for (int i=1; i<=5; i++)
         withdraw(trust_accounts, 1000);
 
+    std::vector<Account*> mixed_accounts;
+    mixed_accounts.push_back(trust_ptr4);
+    mixed_accounts.push_back(check_ptr4);
+    mixed_accounts.push_back(sav_ptr4);
 
+    display(mixed_accounts);
+    deposit(mixed_accounts, 1000);
+    withdraw(mixed_accounts, 2000);
 
+    delete trust_ptr1;
+    delete trust_ptr2;
+    delete trust_ptr3;
+    delete trust_ptr4;
+    delete check_ptr1;
+    delete check_ptr2;
+    delete check_ptr3;
+    delete check_ptr4;
+    delete sav_ptr1;
+    delete sav_ptr2;
+    delete sav_ptr3;
+    delete sav_ptr4;
     return 0;
 }
