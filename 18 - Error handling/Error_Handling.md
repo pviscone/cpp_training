@@ -64,7 +64,7 @@ Le eccezioni si possono raisare anche nelle classi MA non farlo nel distruttore
 
 ## Gerarchia delle eccezioni
 
-La classe base dal quale tutti ereditano è std::exception
+La classe base dal quale tutti ereditano è std::exception. Per averci accesso bisogna includere \<exception>
 
 Questa fornisce una funzione virtuale *what* che ritorna una cstring con la descrizione di cosa è successo
 

@@ -1,13 +1,14 @@
-// Simple Account 
+// Simple Account
 #ifndef _ACCOUNT_H_
 #define _ACCOUNT_H_
 #include <iostream>
 #include <string>
 #include "I_Printable.h"
 #include "IllegalBalanceException.h"
+#include "InsufficentFundsException.h"
 
-class Account : public I_Printable {
-private:   
+class Account : public I_Printable , public IllegalBalanceException , public InsufficentFundsException {
+private:
     static constexpr const char *def_name = "Unnamed Account";
     static constexpr double def_balance = 0.0;
 protected:
