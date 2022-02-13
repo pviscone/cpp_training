@@ -90,3 +90,4 @@ class NewException : public std::exception{
 ```
 
  La keyword **noexcept** serve a dire al compilatore che quella funzione NON raiserà nessuna eccezione. (Distruttore è noexcept di default)
+
