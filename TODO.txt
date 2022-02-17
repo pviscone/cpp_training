@@ -4,7 +4,6 @@ casting
 debugger
 approfondisci template
 iteratori in generale
-private and protected inheritance
 Shared libraries
 Puntatori a puntatori
 unordered map
@@ -18,4 +17,3 @@ Funzioni variadiche
 Costruttori variadici
 Multiprocessing
 Multithreading
-C++20 features
