@@ -258,3 +258,176 @@ Quando mettiamo un elemento in un container questo fa la copia quindi se vogliam
 
 ### Array
 
+NON sono i C style array.
+
+Sono array di lunghezza fissata (a tempo di compilazione) MA:
+
+- sono un oggetto non un puntatore
+- Il tempo di accesso a un elemento dell'array è fissato e non dipende dalla size
+- E' possibile usare gli iteratori e algoritmi
+- E' una classe costruita intorno i raw array quindi è possibile, se si vuole, accedere al raw array e usare le solite funzioni in c style
+
+```cpp
+#include <array>
+const int size {5};
+std::array<int, size> arr {1,2,3,4,5};
+arr={1,2,3,4,5};
+```
+
+i **metodi più usati** sono:
+
+- .size()
+- .at(size_t_value) che corrisponde a [size_t_value]
+- .font() (primo valore), .back() (ultimo valore)
+- .empty() (ritorna bool 1 se array vuoto)
+- .fill(value) riempie array
+- .data() ritorna il raw array (puntatore al primo elemento)
+- arr1.swap(arr2): scambia 2 array
+
+### Vector
+
+Hanno size dinamica. Il tempo di accesso, inserimento e rimozione alla coda è indipendente dalla size mentre per l'inserimento/rimozione all'interno del vettore è lineare
+
+**Metodi comuni**:
+
+- push_back(value)
+
+- pop_back() rimuove ultimo elemento
+
+- size()/capacity()
+
+- front()/back()
+
+- empty() ritorna bool
+
+- clear()
+
+- v1.swap(v2)
+
+- v1.insert(it,value) dove it è un iteratore e corrisponde all'indice in cui inserire value
+
+- erase(it1,it2) cancella tra i 2 iteratori (suppongo) 
+
+- emplace_back(values) : MOLTO EFFICIENTE
+
+  Se abbiamo un vettore v che contiene oggetti di una ClassName(string,int) è possibile mettere in coda all'array un oggetto della classe istanziandola direttamente nel vettore tramite
+
+  ```cpp
+  vec.emplace_back("Name",2);
+  ```
+
+### Deque
+
+La size è dinamica MA gli elementi non sono storati in una sezione contigua di memoria. A differenza degli array le deque permettono l'inserzione e la rimozione a tempo costante anche in testa all' "array" oltre che in coda.
+
+Solitamente la deque è implementata come una collezione di blocchi di memoria contigua PERO' i blocchi separatamente non sono contigui tra loro (è come una link list di vettori)
+
+**metodi comuni**: i soliti, in più è presente:
+
+- push_front(value)/emplace_front(...): aggiunge valore in testa
+- pop_front()
+
+### List and forward list
+
+Elementi storati in sezioni di memoria non contigua.
+
+NON è possibile accedere agli elementi tramite [ ] o .at() MA sono molto efficienti nell'inserire o rimuovere elementi una volta trovato l'elemento (iteratore ottenibile tramite find a tempo lineare)
+
+#### list
+
+Un elemento della lista contiene il valore, un puntatore all'elemento successivo e un puntatore all'elemento precedente
+
+Soliti metodi
+
+#### Forward list
+
+Come la lista ma un elemento contiene, oltre a un valore, solo il puntatore all'elemento successivo (quindi non è possibile usare il reverse_iterator)
+
+Non sono disponibili i metodi size() e tutti i metodi che riguardano il back
+
+Inoltre esiste insert_after/emplace_after/erase_after
+
+### Sets 
+
+Container associativo.
+
+Esistono set, unordered_set, multiset, unordered_multiset e sono implementati come hash set o come alberi binari
+
+I **set** sono letteralmente degli insiemi (no duplicati) e sono ordinati da una chiave
+
+**metodi comuni**:
+
+- .insert(object) : il metodo insert ritorna una pair<iterator,bool> che contiene l'iteratore all'elemento inserito (o al suo duplicato già esistente) e un bool che indica il successo o fallimento
+- .emplace(...)
+- .erase(object)
+- .find(object)
+- .empty() 
+- .clear()
+
+I **multiset** permettono la presenza di elementi duplicati
+
+Gli **unordered** non hanno un ordine, gli elementi non possono essere modificati e non sono ammessi reverse_iterator
+
+### Maps
+
+Anche per le maps esistono le multimap e le unordered_map (e multimap)
+
+Sono simili a un dizionario e ordinati con una chiave. Non sono permessi elementi duplicati (le chiavi sono uniche)
+
+```cpp
+#include <map>
+std::map<std::string,int> int_dict{ {"uno",1} , {"due",2};
+```
+
+Metodi simili ai set MA attenzione, per usare insert bisogna inserire un oggetto std::pair<T1,T2> o in alternativa fare
+
+```cpp
+map_name[key]=value; //Fa anche update dei valori se la key esiste già
+```
+
+### Stack
+
+E' un adaptor container. E' letteralmente uno stack, come se fosse una pila di piatti
+
+E' una struttura dati LIFO (Last in first out) implementata come un adattatore sopra un altro conteiner. 
+Tutte le operazioni avvengono alla fine dello stack
+
+Gli iteratori NON sono supportati.
+I **metodi più usati** sono:
+
+- push (Inserisci elemento in cima allo stack)
+- pop (Rimuovi elemento in cima allo stack)
+- top (accedi all'elemento in cima allo stack)
+- empty
+- size
+
+Stack è un adapter quindi possiamo scegliere che container usare per creare l'oggetto. Di base è usata una deque
+
+```cpp
+#include <stack>
+std::stack<int,std::vector<int>> st1;
+//In questo modo per implementare la struttura a stack e riempirla di int usiamo un vettore
+
+std::stack<int> st1; //In questo caso verrà usata una deque
+```
+
+### Queue
+
+Adattatore con Struttura FIFO (First in First Out).
+
+Gli elementi vengono pushati in cima e eliminati alla base.
+Gli iteratori non sono supportati.
+
+Anche qui di default viene usata una deque
+
+i **metodi** sono simili allo stack (ricorda comportamento diverso per push and pop) e in più abbiamo front e back per accedere all'elemento in cima e alla base della struttura
+
+### Priority queue
+
+Queue che permette l'inserzione o rimozione degli elementi in ordine a partire dall' inizio del container.
+Gli elementi sono inseriti in ordine prioritario (i valori più grandi saranno sempre in testa al container)
+
+Di default vengono usati i vector.
+Gli iteratori non sono supportati
+
+I **metodi sono sempre gli stessi** MA push inserisce un elemento in modo tale che rispetti l'ordinamento nel container, pop rimuove l'argomento maggiore in testa al container e top accede all'elemento più grande in testa al container
